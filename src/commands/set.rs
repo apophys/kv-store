@@ -1,10 +1,19 @@
 use super::StorageCommand;
+use crate::backend::get_backend_adapter;
 use crate::config::Config;
 use crate::Set;
 
 impl StorageCommand for Set {
-    fn execute(&self, _cfg: &Config) -> Result<bool, &'static str> {
-        println!("Setting a value [{}] to key [{}]", self.value, self.key);
+    fn execute(&self, cfg: &Config) -> Result<bool, &'static str> {
+        if cfg.verbosity > 0 {
+            println!("Getting the value for key [{}]", self.key.clone());
+        }
+
+        let mut backend = get_backend_adapter(cfg);
+        let result = backend
+            .set(self.key.clone(), self.value.clone())
+            .expect("Couldn't save the value");
+        println!("{}", result);
         Ok(true)
     }
 }
