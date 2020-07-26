@@ -1,6 +1,6 @@
-pub mod set;
-pub mod get;
 pub mod clear;
+pub mod get;
+pub mod set;
 
 use crate::config::Config;
 

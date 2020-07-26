@@ -1,6 +1,6 @@
+use super::StorageCommand;
 use crate::config::Config;
 use crate::Set;
-use crate::commands::StorageCommand;
 
 impl StorageCommand for Set {
     fn execute(&self, _cfg: &mut Config) -> Result<bool, &'static str> {
