@@ -1,5 +1,6 @@
 use clap::Clap;
 
+mod backend;
 mod commands;
 mod config;
 
