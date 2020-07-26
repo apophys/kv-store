@@ -5,5 +5,5 @@ pub mod set;
 use crate::config::Config;
 
 pub trait StorageCommand {
-    fn execute(&self, cfg: &mut Config) -> Result<bool, &'static str>;
+    fn execute(&self, cfg: &Config) -> Result<bool, &'static str>;
 }

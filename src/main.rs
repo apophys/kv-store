@@ -38,7 +38,7 @@ struct Clear {
 }
 
 impl StorageCommand for SubCommand {
-    fn execute(&self, cfg: &mut Config) -> Result<bool, &'static str> {
+    fn execute(&self, cfg: &Config) -> Result<bool, &'static str> {
         match self {
             SubCommand::Set(cmd) => cmd.execute(cfg),
             SubCommand::Get(cmd) => cmd.execute(cfg),
@@ -50,9 +50,9 @@ impl StorageCommand for SubCommand {
 fn main() {
     let opts: Opts = Opts::parse();
 
-    let mut config = Config {
+    let config = Config {
         verbosity: opts.verbose,
     };
 
-    let _result = opts.subcmd.execute(&mut config);
+    let _result = opts.subcmd.execute(&config);
 }
