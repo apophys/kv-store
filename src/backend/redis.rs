@@ -17,14 +17,10 @@ impl BackendAdapter for RedisConnection {
         }
     }
 
-    fn set(&mut self, key: String, value: String) -> Result<String, &'static str> {
-        println!(
-            "Setting value [{}] for key [{}] in redis",
-            key.clone(),
-            value.clone()
-        );
+    fn set(&mut self, key: &str, value: &str) -> Result<String, &'static str> {
+        println!("Setting value [{}] for key [{}] in redis", &key, &value);
         self.conn
-            .write(format!("SET {} {}\r\n", key, value.clone()).as_bytes())
+            .write(format!("SET {} {}\r\n", &key, &value).as_bytes())
             .expect("Fail to communicate with redis");
         let mut result = [0; 512];
         self.conn
@@ -35,9 +31,9 @@ impl BackendAdapter for RedisConnection {
         Ok(result_str.to_string())
     }
 
-    fn get(&mut self, key: String) -> Result<String, &'static str> {
+    fn get(&mut self, key: &str) -> Result<String, &'static str> {
         self.conn
-            .write(format!("GET {}\r\n", key).as_bytes())
+            .write(format!("GET {}\r\n", &key).as_bytes())
             .expect("Fail to communicate with redis");
         let mut result = [0; 512];
         self.conn
@@ -48,9 +44,9 @@ impl BackendAdapter for RedisConnection {
         Ok(result_str.to_string())
     }
 
-    fn clear(&mut self, key: String) -> Result<String, &'static str> {
+    fn clear(&mut self, key: &str) -> Result<String, &'static str> {
         self.conn
-            .write(format!("DEL {}\r\n", key).as_bytes())
+            .write(format!("DEL {}\r\n", &key).as_bytes())
             .expect("Fail to communicate with redis");
         let mut result = [0; 512];
         self.conn

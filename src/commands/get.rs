@@ -10,9 +10,7 @@ impl StorageCommand for Get {
         }
 
         let mut backend = get_backend_adapter(cfg);
-        let result = backend
-            .get(self.key.clone())
-            .expect("Couldn't save the value");
+        let result = backend.get(&self.key).expect("Couldn't save the value");
         println!("{}", result);
         Ok(true)
     }
