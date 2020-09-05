@@ -10,7 +10,7 @@ impl StorageCommand for Clear {
         }
 
         let mut backend = get_backend_adapter(cfg);
-        let result = backend.clear(&self.key).expect("Couldn't save the value");
+        let result = backend.clear(&self.key);
         println!("{}", result);
         Ok(true)
     }

@@ -10,9 +10,7 @@ impl StorageCommand for Set {
         }
 
         let mut backend = get_backend_adapter(cfg);
-        let result = backend
-            .set(&self.key, &self.value)
-            .expect("Couldn't save the value");
+        let result = backend.set(&self.key, &self.value);
         println!("{}", result);
         Ok(true)
     }

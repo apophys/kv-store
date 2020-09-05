@@ -17,7 +17,7 @@ impl BackendAdapter for RedisConnection {
         }
     }
 
-    fn set(&mut self, key: &str, value: &str) -> Result<String, &'static str> {
+    fn set(&mut self, key: &str, value: &str) -> String {
         println!("Setting value [{}] for key [{}] in redis", &key, &value);
         self.conn
             .write(format!("SET {} {}\r\n", &key, &value).as_bytes())
@@ -28,10 +28,10 @@ impl BackendAdapter for RedisConnection {
             .expect("Fail to communicate with redis");
         let result_str = str::from_utf8(&result).expect("Handle me better");
 
-        Ok(result_str.to_string())
+        result_str.to_string()
     }
 
-    fn get(&mut self, key: &str) -> Result<String, &'static str> {
+    fn get(&mut self, key: &str) -> String {
         self.conn
             .write(format!("GET {}\r\n", &key).as_bytes())
             .expect("Fail to communicate with redis");
@@ -41,10 +41,10 @@ impl BackendAdapter for RedisConnection {
             .expect("Fail to communicate with redis");
         let result_str = str::from_utf8(&result).expect("Handle me better");
 
-        Ok(result_str.to_string())
+        result_str.to_string()
     }
 
-    fn clear(&mut self, key: &str) -> Result<String, &'static str> {
+    fn clear(&mut self, key: &str) -> String {
         self.conn
             .write(format!("DEL {}\r\n", &key).as_bytes())
             .expect("Fail to communicate with redis");
@@ -55,6 +55,6 @@ impl BackendAdapter for RedisConnection {
 
         let result_str = str::from_utf8(&result).expect("Handle me better");
 
-        Ok(result_str.to_string())
+        result_str.to_string()
     }
 }

@@ -6,9 +6,9 @@ pub trait BackendAdapter {
     fn new() -> Self
     where
         Self: Sized;
-    fn set(&mut self, key: &str, value: &str) -> Result<String, &'static str>;
-    fn get(&mut self, key: &str) -> Result<String, &'static str>;
-    fn clear(&mut self, key: &str) -> Result<String, &'static str>;
+    fn set(&mut self, key: &str, value: &str) -> String;
+    fn get(&mut self, key: &str) -> String;
+    fn clear(&mut self, key: &str) -> String;
 }
 
 pub fn get_backend_adapter(_options: &Config) -> Box<dyn BackendAdapter> {
