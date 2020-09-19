@@ -1,17 +1,17 @@
-use super::StorageCommand;
+use super::*;
 use crate::backend::get_backend_adapter;
 use crate::config::Config;
-use crate::Clear;
+use crate::ClearCommand;
 
-impl StorageCommand for Clear {
-    fn execute(&self, cfg: &Config) -> Result<bool, &'static str> {
+impl StorageCommand<()> for ClearCommand {
+    fn execute(&self, cfg: &Config) -> StorageCommandResult<()> {
         if cfg.verbosity > 0 {
             println!("Getting the value for key [{}]", &self.key);
         }
 
-        let mut backend = get_backend_adapter(cfg);
-        let result = backend.clear(&self.key);
+        let mut backend = get_backend_adapter(cfg)?;
+        let result = backend.clear(&self.key)?;
         println!("{}", result);
-        Ok(true)
+        Ok(())
     }
 }
