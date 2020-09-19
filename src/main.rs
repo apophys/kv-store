@@ -1,3 +1,4 @@
+use crate::commands::StorageCommandResult;
 use clap::Clap;
 
 mod backend;
@@ -12,38 +13,38 @@ struct Opts {
     #[clap(short, long, parse(from_occurrences))]
     verbose: i32,
     #[clap(subcommand)]
-    subcmd: SubCommand,
+    subcmd: CLISubCommand,
 }
 
 #[derive(Clap)]
-enum SubCommand {
-    Set(Set),
-    Get(Get),
-    Clear(Clear),
+enum CLISubCommand {
+    Set(SetCommand),
+    Get(GetCommand),
+    Clear(ClearCommand),
 }
 
 #[derive(Clap)]
-struct Set {
+struct SetCommand {
     key: String,
     value: String,
 }
 
 #[derive(Clap)]
-struct Get {
+struct GetCommand {
     key: String,
 }
 
 #[derive(Clap)]
-struct Clear {
+struct ClearCommand {
     key: String,
 }
 
-impl StorageCommand for SubCommand {
-    fn execute(&self, cfg: &Config) -> Result<bool, &'static str> {
+impl StorageCommand<()> for CLISubCommand {
+    fn execute(&self, cfg: &Config) -> StorageCommandResult<()> {
         match self {
-            SubCommand::Set(cmd) => cmd.execute(cfg),
-            SubCommand::Get(cmd) => cmd.execute(cfg),
-            SubCommand::Clear(cmd) => cmd.execute(cfg),
+            CLISubCommand::Set(cmd) => cmd.execute(cfg),
+            CLISubCommand::Get(cmd) => cmd.execute(cfg),
+            CLISubCommand::Clear(cmd) => cmd.execute(cfg),
         }
     }
 }
@@ -53,7 +54,10 @@ fn main() {
 
     let config = Config {
         verbosity: opts.verbose,
+        backend_url: None,
     };
 
-    let _result = opts.subcmd.execute(&config);
+    if let Err(err) = opts.subcmd.execute(&config) {
+        println!("{:?}", err)
+    }
 }
