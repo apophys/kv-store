@@ -17,7 +17,6 @@ impl BackendAdapter for RedisConnection {
     }
 
     fn set(&mut self, key: &str, value: &str) -> BackendAdapterResult<String> {
-        println!("Setting value [{}] for key [{}] in redis", &key, &value);
         self.conn
             .write(format!("SET {} {}\r\n", &key, &value).as_bytes())?;
         let mut result = [0; 512];
