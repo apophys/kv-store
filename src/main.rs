@@ -1,11 +1,10 @@
-use crate::commands::StorageCommandResult;
-use clap::Clap;
-
 mod backend;
 mod commands;
 mod config;
 
-use commands::StorageCommand;
+use clap::Clap;
+
+use commands::{StorageCommand, StorageCommandResult};
 use config::Config;
 
 #[derive(Clap)]
