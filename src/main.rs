@@ -38,12 +38,12 @@ struct ClearCommand {
     key: String,
 }
 
-impl StorageCommand<()> for CLISubCommand {
+impl CLISubCommand {
     fn execute(&self, cfg: &Config) -> StorageCommandResult<()> {
         match self {
-            CLISubCommand::Set(cmd) => cmd.execute(cfg),
-            CLISubCommand::Get(cmd) => cmd.execute(cfg),
-            CLISubCommand::Clear(cmd) => cmd.execute(cfg),
+            Self::Set(cmd) => cmd.execute(cfg),
+            Self::Get(cmd) => cmd.execute(cfg),
+            Self::Clear(cmd) => cmd.execute(cfg),
         }
     }
 }
