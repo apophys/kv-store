@@ -1,47 +1,46 @@
 use super::*;
-use std::io::prelude::*;
-use std::net::TcpStream;
+
 use std::str;
 use std::string::String;
 
+use redis::Commands;
+
+impl From<redis::RedisError> for BackendAdapterError {
+    fn from(error: redis::RedisError) -> Self {
+        BackendAdapterError::TransportError(Box::new(error))
+    }
+}
+
 #[derive(Debug)]
 pub struct RedisConnection {
-    conn: TcpStream,
+    client: redis::Client,
 }
 
 impl BackendAdapter for RedisConnection {
     fn new() -> BackendAdapterResult<Self> {
         Ok(RedisConnection {
-            conn: TcpStream::connect("127.0.0.1:6379")?,
+            client: redis::Client::open("redis://127.0.0.1:6379")?,
         })
     }
 
-    fn set(&mut self, key: &str, value: &str) -> BackendAdapterResult<String> {
-        self.conn
-            .write(format!("SET {} {}\r\n", &key, &value).as_bytes())?;
-        let mut result = [0; 512];
-        self.conn.read(&mut result)?;
-        let result_str = str::from_utf8(&result)?;
+    fn set(&mut self, key: &str, value: &str) -> BackendAdapterResult<()> {
+        let mut conn = self.client.get_connection()?;
+        let _: () = conn.set(key, value)?;
 
-        Ok(result_str.to_string())
+        Ok(())
     }
 
-    fn get(&mut self, key: &str) -> BackendAdapterResult<String> {
-        self.conn.write(format!("GET {}\r\n", &key).as_bytes())?;
-        let mut result = [0; 512];
-        self.conn.read(&mut result)?;
-        let result_str = str::from_utf8(&result)?;
+    fn get(&mut self, key: &str) -> BackendAdapterResult<Option<String>> {
+        let mut conn = self.client.get_connection()?;
 
-        Ok(result_str.to_string())
+        let result = conn.get(key)?;
+        Ok(result)
     }
 
-    fn clear(&mut self, key: &str) -> BackendAdapterResult<String> {
-        self.conn.write(format!("DEL {}\r\n", &key).as_bytes())?;
-        let mut result = [0; 512];
-        self.conn.read(&mut result)?;
+    fn clear(&mut self, key: &str) -> BackendAdapterResult<()> {
+        let mut conn = self.client.get_connection()?;
 
-        let result_str = str::from_utf8(&result)?;
-
-        Ok(result_str.to_string())
+        let _: () = conn.del(key)?;
+        Ok(())
     }
 }
