@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MIT
+
 mod backend;
 mod commands;
 mod config;

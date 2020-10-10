@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MIT
+
 use crate::config::Config;
 
 pub mod redis_adapter;
