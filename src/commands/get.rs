@@ -6,12 +6,22 @@ use crate::GetCommand;
 impl StorageCommand<()> for GetCommand {
     fn execute(&self, cfg: &Config) -> StorageCommandResult<()> {
         if cfg.verbosity > 0 {
-            println!("Getting the value for key [{}]", self.key.clone());
+            eprintln!("Getting the value for key [{}]", self.key);
         }
 
         let mut backend = get_backend_adapter(cfg)?;
         let result = backend.get(&self.key)?;
-        println!("{}", result);
+
+        match result {
+            Some(value) => {
+                println!("{}", value);
+            }
+            None => {
+                if cfg.verbosity > 0 {
+                    eprintln!("Key [{}] not found.", self.key);
+                }
+            }
+        }
         Ok(())
     }
 }

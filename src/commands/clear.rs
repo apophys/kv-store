@@ -6,12 +6,11 @@ use crate::ClearCommand;
 impl StorageCommand<()> for ClearCommand {
     fn execute(&self, cfg: &Config) -> StorageCommandResult<()> {
         if cfg.verbosity > 0 {
-            println!("Getting the value for key [{}]", &self.key);
+            eprintln!("Deleting the key [{}]", self.key);
         }
 
         let mut backend = get_backend_adapter(cfg)?;
-        let result = backend.clear(&self.key)?;
-        println!("{}", result);
+        backend.clear(&self.key)?;
         Ok(())
     }
 }
