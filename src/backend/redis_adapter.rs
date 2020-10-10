@@ -27,7 +27,7 @@ impl BackendAdapter for RedisConnection {
 
     fn set(&mut self, key: &str, value: &str) -> BackendAdapterResult<()> {
         let mut conn = self.client.get_connection()?;
-        let _: () = conn.set(key, value)?;
+        conn.set(key, value)?;
 
         Ok(())
     }
@@ -35,14 +35,13 @@ impl BackendAdapter for RedisConnection {
     fn get(&mut self, key: &str) -> BackendAdapterResult<Option<String>> {
         let mut conn = self.client.get_connection()?;
 
-        let result = conn.get(key)?;
-        Ok(result)
+        Ok(conn.get(key)?)
     }
 
     fn clear(&mut self, key: &str) -> BackendAdapterResult<()> {
         let mut conn = self.client.get_connection()?;
 
-        let _: () = conn.del(key)?;
+        conn.del(key)?;
         Ok(())
     }
 }
