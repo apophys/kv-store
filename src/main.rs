@@ -3,6 +3,9 @@
 mod backend;
 mod commands;
 mod config;
+mod logging;
+
+use log;
 
 use clap::Clap;
 
@@ -11,8 +14,10 @@ use config::Config;
 
 #[derive(Clap)]
 struct Opts {
-    #[clap(short, long, parse(from_occurrences))]
-    verbose: i32,
+    #[clap(short, long)]
+    verbose: bool,
+    #[clap(short, long)]
+    backend: Option<String>,
     #[clap(subcommand)]
     subcmd: CLISubCommand,
 }
@@ -53,10 +58,15 @@ impl CLISubCommand {
 fn main() {
     let opts: Opts = Opts::parse();
 
-    let config = Config {
-        verbosity: opts.verbose,
-        backend_url: None,
-    };
+    let config = Config::new()
+        .verbose(opts.verbose)
+        .backend_url(opts.backend);
+
+    if let Ok(_) = logging::configure_logger(&config) {
+        log::info!("Successfully loaded config and initialized logging.");
+    } else {
+        eprintln!("Couldn't configure the logger");
+    }
 
     if let Err(err) = opts.subcmd.execute(&config) {
         println!("{:?}", err)
