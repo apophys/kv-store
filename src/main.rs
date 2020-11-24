@@ -5,8 +5,6 @@ mod commands;
 mod config;
 mod logging;
 
-use log;
-
 use clap::Clap;
 
 use commands::{StorageCommand, StorageCommandResult};
@@ -62,7 +60,7 @@ fn main() {
         .verbose(opts.verbose)
         .backend_url(opts.backend);
 
-    if let Ok(_) = logging::configure_logger(&config) {
+    if logging::configure_logger(&config).is_ok() {
         log::info!("Successfully loaded config and initialized logging.");
     } else {
         eprintln!("Couldn't configure the logger");

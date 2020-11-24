@@ -1,7 +1,5 @@
 // SPDX-License-Identifier: MIT
 
-use simplelog;
-
 use crate::config;
 
 pub type ConfigResult<T> = Result<T, Box<dyn std::error::Error>>;

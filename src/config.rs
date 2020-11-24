@@ -1,7 +1,5 @@
 // SPDX-License-Identifier: MIT
 
-use log;
-
 #[derive(Debug)]
 pub struct Config {
     pub logging_level: log::LevelFilter,
