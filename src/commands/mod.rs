@@ -20,6 +20,6 @@ pub trait StorageCommand<T> {
 
 impl From<BackendAdapterError> for StorageCommandError {
     fn from(error: BackendAdapterError) -> Self {
-        StorageCommandError::BackendError(error)
+        Self::BackendError(error)
     }
 }
