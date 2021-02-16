@@ -5,11 +5,12 @@ use super::*;
 use std::str;
 use std::string::String;
 
+use crate::config::Config;
 use redis::Commands;
 
 impl From<redis::RedisError> for BackendAdapterError {
     fn from(error: redis::RedisError) -> Self {
-        BackendAdapterError::TransportError(Box::new(error))
+        Self::TransportError(Box::new(error))
     }
 }
 
@@ -19,9 +20,16 @@ pub struct RedisConnection {
 }
 
 impl BackendAdapter for RedisConnection {
-    fn new() -> BackendAdapterResult<Self> {
+    fn new(config: &Config) -> BackendAdapterResult<Self> {
         Ok(RedisConnection {
-            client: redis::Client::open("redis://127.0.0.1:6379")?,
+            client: match config.backend_url {
+                Some(ref address) => {
+                    redis::Client::open(&address[..])?
+                },
+                None => {
+                    redis::Client::open("redis://127.0.0.1:6379")?
+                }
+            }
         })
     }
 

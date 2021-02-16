@@ -14,7 +14,7 @@ pub enum BackendAdapterError {
 pub type BackendAdapterResult<T> = Result<T, BackendAdapterError>;
 
 pub trait BackendAdapter {
-    fn new() -> BackendAdapterResult<Self>
+    fn new(config: &Config) -> BackendAdapterResult<Self>
     where
         Self: Sized;
     fn set(&mut self, key: &str, value: &str) -> BackendAdapterResult<()>;
@@ -22,18 +22,18 @@ pub trait BackendAdapter {
     fn clear(&mut self, key: &str) -> BackendAdapterResult<()>;
 }
 
-pub fn get_backend_adapter(_options: &Config) -> BackendAdapterResult<Box<dyn BackendAdapter>> {
-    Ok(Box::new(redis_adapter::RedisConnection::new()?))
+pub fn get_backend_adapter(options: &Config) -> BackendAdapterResult<Box<dyn BackendAdapter>> {
+    Ok(Box::new(redis_adapter::RedisConnection::new(options)?))
 }
 
 impl From<std::str::Utf8Error> for BackendAdapterError {
     fn from(error: std::str::Utf8Error) -> Self {
-        BackendAdapterError::ParseError(error)
+        Self::ParseError(error)
     }
 }
 
 impl From<std::io::Error> for BackendAdapterError {
     fn from(error: std::io::Error) -> Self {
-        BackendAdapterError::NetworkUnavailable(error)
+        Self::NetworkUnavailable(error)
     }
 }
