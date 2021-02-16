@@ -8,7 +8,7 @@ mod logging;
 use clap::Clap;
 
 use commands::{StorageCommand, StorageCommandResult};
-use config::Config;
+use crate::config::{Config, ConfigBuilder};
 
 #[derive(Clap)]
 struct Opts {
@@ -56,9 +56,10 @@ impl CLISubCommand {
 fn main() {
     let opts: Opts = Opts::parse();
 
-    let config = Config::new()
+    let config = ConfigBuilder::new()
         .verbose(opts.verbose)
-        .backend_url(opts.backend);
+        .backend_url(opts.backend)
+        .build();
 
     if logging::configure_logger(&config).is_ok() {
         log::info!("Successfully loaded config and initialized logging.");

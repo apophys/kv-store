@@ -6,7 +6,13 @@ pub struct Config {
     pub backend_url: Option<String>,
 }
 
-impl Config {
+#[derive(Debug)]
+pub struct ConfigBuilder {
+    pub logging_level: log::LevelFilter,
+    pub backend_url: Option<String>,
+}
+
+impl ConfigBuilder {
     pub fn new() -> Self {
         Default::default()
     }
@@ -27,11 +33,27 @@ impl Config {
             None => self,
         }
     }
+
+    pub fn build(self) -> Config {
+        Config {
+            logging_level: self.logging_level,
+            backend_url: self.backend_url,
+        }
+    }
 }
 
 impl Default for Config {
     fn default() -> Self {
         Config {
+            logging_level: log::LevelFilter::Off,
+            backend_url: None,
+        }
+    }
+}
+
+impl Default for ConfigBuilder {
+    fn default() -> Self {
+        ConfigBuilder {
             logging_level: log::LevelFilter::Off,
             backend_url: None,
         }
