@@ -10,15 +10,11 @@ impl StorageCommand<()> for GetCommand {
         log::info!("Getting the value for key [{}]", self.key);
 
         let mut backend = get_backend_adapter(cfg)?;
-        let result = backend.get(&self.key)?;
 
-        match result {
-            Some(value) => {
-                println!("{}", value);
-            }
-            None => {
-                log::warn!("Key [{}] not found.", self.key);
-            }
+        if let Some(value) = backend.get(&self.key)? {
+            println!("{}", value);
+        } else {
+            log::warn!("Key [{}] not found.", self.key);
         }
         Ok(())
     }
