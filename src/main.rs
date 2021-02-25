@@ -7,8 +7,8 @@ mod logging;
 
 use clap::Clap;
 
-use commands::{StorageCommand, StorageCommandResult};
 use crate::config::{Config, ConfigBuilder};
+use commands::{StorageCommand, StorageCommandResult};
 
 #[derive(Clap)]
 struct Opts {
@@ -68,6 +68,6 @@ fn main() {
     }
 
     if let Err(err) = opts.subcmd.execute(&config) {
-        println!("{:?}", err)
+        eprintln!("{}", err);
     }
 }

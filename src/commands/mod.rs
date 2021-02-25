@@ -4,6 +4,9 @@ pub mod clear;
 pub mod get;
 pub mod set;
 
+use std::fmt;
+use std::error::Error;
+
 use crate::backend::BackendAdapterError;
 use crate::config::Config;
 
@@ -23,3 +26,13 @@ impl From<BackendAdapterError> for StorageCommandError {
         Self::BackendError(error)
     }
 }
+
+impl fmt::Display for StorageCommandError {
+	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+		match self {
+			Self::BackendError(err) => write!(f, "{}", err)
+		}
+	}
+}
+
+impl Error for StorageCommandError {}

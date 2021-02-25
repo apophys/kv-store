@@ -1,5 +1,9 @@
 // SPDX-License-Identifier: MIT
 
+
+use std::error::Error;
+use std::fmt;
+
 use crate::config::Config;
 
 pub mod redis_adapter;
@@ -25,6 +29,19 @@ pub trait BackendAdapter {
 pub fn get_backend_adapter(options: &Config) -> BackendAdapterResult<Box<dyn BackendAdapter>> {
     Ok(Box::new(redis_adapter::RedisConnection::new(options)?))
 }
+
+impl fmt::Display for BackendAdapterError {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match self {
+            Self::NetworkUnavailable(err) => write!(f, "Network Unavailable {}", err),
+            Self::ParseError(err) => write!(f, "Couldn't parse utf-8 string {}", err),
+            Self::TransportError(err) => write!(f, "Transport error: {}", err)
+        }
+    }
+}
+
+impl Error for BackendAdapterError {}
+
 
 impl From<std::str::Utf8Error> for BackendAdapterError {
     fn from(error: std::str::Utf8Error) -> Self {
